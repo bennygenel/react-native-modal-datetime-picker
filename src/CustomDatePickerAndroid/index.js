@@ -18,7 +18,7 @@ export default class CustomDatePickerAndroid extends Component {
   static defaultProps = {
     date: new Date(),
     mode: 'date',
-    datePickerModeAndroid: 'calendar',
+    //datePickerModeAndroid: 'calendar', // Commented because of a possible bug related to mode prop of DatePickerAndroid
     is24Hour: true,
     isVisible: false,
   };
@@ -35,12 +35,18 @@ export default class CustomDatePickerAndroid extends Component {
 
   _showDatePickerAndroid = async () => {
     try {
-      const { action, year, month, day } = await DatePickerAndroid.open({
+
+      let datePickerOptions = {
         date: this.props.date,
         minDate: this.props.minimumDate,
         maxDate: this.props.maximumDate,
-        mode: this.props.datePickerModeAndroid,
-      });
+      }
+
+      if(this.props.datePickerModeAndroid){
+        datePickerOptions["datePickerModeAndroid"] = this.props.datePickerModeAndroid;
+      }
+
+      const { action, year, month, day } = await DatePickerAndroid.open(datePickerOptions);
       if (action !== DatePickerAndroid.dismissedAction) {
         const date = moment({ year, month, day }).toDate();
 
